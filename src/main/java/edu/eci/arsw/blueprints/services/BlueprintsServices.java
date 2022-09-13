@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.eci.arsw.services;
+package edu.eci.arsw.blueprints.services;
 
-import edu.eci.arsw.blueprints.controllers.BluePrintNotFoundException;
-import edu.eci.arsw.blueprints.controllers.BlueprintsPersistenceException;
-import edu.eci.arsw.model.Blueprint;
-import edu.eci.arsw.blueprints.controllers.BlueprintsPersistence;
+import edu.eci.arsw.blueprints.persistence.BluePrintNotFoundException;
+import edu.eci.arsw.blueprints.persistence.BlueprintsPersistenceException;
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
 
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 public class BlueprintsServices {
    
     @Autowired
-    @Qualifier("inMemory")
     BlueprintsPersistence bpp=null;
     
     public void addNewBlueprint(Blueprint bp) throws BlueprintsPersistenceException {
@@ -34,7 +32,7 @@ public class BlueprintsServices {
         bpp.updateBlueprint(bp,newAuthor,bprintname);
     }
     
-    public Set<Blueprint> getAllBlueprints()  {
+    public Set<Blueprint> getAllBlueprints() throws BlueprintsPersistenceException {
         return bpp.getAllBlueprints();
     }
     

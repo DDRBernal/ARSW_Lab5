@@ -5,14 +5,19 @@
  */
 package edu.eci.arsw.blueprints.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import edu.eci.arsw.model.Blueprint;
-import edu.eci.arsw.services.BlueprintsServices;
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.services.BlueprintsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import edu.eci.arsw.blueprints.persistence.BlueprintsPersistenceException;
+import edu.eci.arsw.blueprints.persistence.BluePrintNotFoundException;
 
 /**
  *
@@ -20,20 +25,23 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping(value = "/")
+@RequestMapping(value = "/blueprints")
 public class BlueprintAPIController {
     @Autowired
     BlueprintsServices blueprintsServices;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Set<Blueprint>> GetResource() {
+    public ResponseEntity<?> GetResource() {
         //obtener datos que se enviarán a través del API
         //data
-        return new ResponseEntity<>(blueprintsServices.getAllBlueprints(), HttpStatus.ACCEPTED);
+        try {
+            return new ResponseEntity<>(blueprintsServices.getAllBlueprints(), HttpStatus.ACCEPTED);
+        } catch (BlueprintsPersistenceException ex){
+            return new ResponseEntity<>("Blue print error",HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/blueprint/author")
-    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/blueprints/{author}")
     public ResponseEntity<?> getBlueprintByAuthor(@PathVariable String author) {
         try{
             return new ResponseEntity<>(blueprintsServices.getBlueprintsByAuthor(author),HttpStatus.ACCEPTED);
@@ -42,8 +50,7 @@ public class BlueprintAPIController {
         }
     }
 
-    @GetMapping("/blueprint/author/bpname")
-    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/blueprints/{author}/{bpname}")
     public ResponseEntity<?> getBlueprint(@PathVariable String author, @PathVariable String bpname){
         try {
             return new ResponseEntity<>(blueprintsServices.getBlueprint(author,bpname),HttpStatus.ACCEPTED);
@@ -52,28 +59,33 @@ public class BlueprintAPIController {
         }
     }
 
-    @GetMapping("/blueprint")
-    @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> addNewBlueprint(@PathVariable Blueprint bp){
-        try{
-            blueprintsServices.addNewBlueprint(bp);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }catch (BlueprintsPersistenceException ex){
-            return new ResponseEntity<>("404 ERROR \n The blueprint wasn't found",HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @GetMapping("/blueprints/{author}/{bpname}")
+//    @RequestMapping(method = RequestMethod.POST)
+//    public ResponseEntity<?> updateNewBlueprint(@PathVariable Blueprint bp, @PathVariable String author, @PathVariable String bpname){
+//        try {
+//            blueprintsServices.updateBlueprint(bp,author,bpname);
+//            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+//        } catch (BlueprintsPersistenceException e) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
-    @GetMapping("/blueprint/{author}/{bpname}")
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> updateNewBlueprint(@PathVariable Blueprint bp, @PathVariable String author, @PathVariable String bpname){
-        try {
-            blueprintsServices.updateBlueprint(bp,author,bpname);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (BlueprintsPersistenceException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
+
+    private String crearJsonString(Set<Blueprint> blueprints) {
+        List<Blueprint> blueprintList = new ArrayList<>(blueprints);
+        String blueprintsString = "{\"blueprints\" : ";
+
+        for (Blueprint blueprint:blueprintList) {
+            String author = blueprint.getAuthor();
+            String name = blueprint.getName();
+            String points = "blueprint.getPointsString()";
+            blueprintsString += "{\"Author\": \"" + author + "\", \"Name\": \"" + name + "\", \"Points\": \"" + points + "\"}";
+        }
+        blueprintsString += "}";
+
+        return blueprintsString;
+    }
 
 }
 

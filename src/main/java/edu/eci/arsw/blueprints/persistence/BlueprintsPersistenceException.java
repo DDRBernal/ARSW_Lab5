@@ -1,4 +1,4 @@
-package edu.eci.arsw.blueprints.controllers;
+package edu.eci.arsw.blueprints.persistence;
 
 public class BlueprintsPersistenceException extends Exception{
 

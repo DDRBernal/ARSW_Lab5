@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.eci.arsw.blueprints.controllers.impl;
+package edu.eci.arsw.blueprints.persistence.impl;
 
-import edu.eci.arsw.model.Blueprint;
-import edu.eci.arsw.model.Point;
-import edu.eci.arsw.blueprints.controllers.BlueprintsPersistence;
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.model.Point;
+import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
