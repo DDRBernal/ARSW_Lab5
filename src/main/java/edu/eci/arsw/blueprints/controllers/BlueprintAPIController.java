@@ -5,18 +5,14 @@
  */
 package edu.eci.arsw.blueprints.controllers;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import edu.eci.arsw.blueprintsapi.BlueprintsAPIApplication;
+import edu.eci.arsw.model.Blueprint;
+import edu.eci.arsw.services.BlueprintsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -24,14 +20,60 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-//@RequestMapping{value = "/blueprints"}
+@RequestMapping(value = "/")
 public class BlueprintAPIController {
+    @Autowired
+    BlueprintsServices blueprintsServices;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<String> GetResource() {
+    public ResponseEntity<Set<Blueprint>> GetResource() {
         //obtener datos que se enviarán a través del API
         //data
-        return new ResponseEntity<>("", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(blueprintsServices.getAllBlueprints(), HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/blueprint/author")
+    @ResponseBody
+    public ResponseEntity<?> getBlueprintByAuthor(@PathVariable String author) {
+        try{
+            return new ResponseEntity<>(blueprintsServices.getBlueprintsByAuthor(author),HttpStatus.ACCEPTED);
+        } catch (BluePrintNotFoundException ex) {
+            return new ResponseEntity<>("404 ERROR \n The blueprint by Author +"+author+" wasn't found",HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/blueprint/author/bpname")
+    @ResponseBody
+    public ResponseEntity<?> getBlueprint(@PathVariable String author, @PathVariable String bpname){
+        try {
+            return new ResponseEntity<>(blueprintsServices.getBlueprint(author,bpname),HttpStatus.ACCEPTED);
+        } catch (BluePrintNotFoundException ex){
+            return new ResponseEntity<>("404 ERROR \n The blueprint wasn't found ",HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/blueprint")
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<?> addNewBlueprint(@PathVariable Blueprint bp){
+        try{
+            blueprintsServices.addNewBlueprint(bp);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }catch (BlueprintsPersistenceException ex){
+            return new ResponseEntity<>("404 ERROR \n The blueprint wasn't found",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/blueprint/{author}/{bpname}")
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> updateNewBlueprint(@PathVariable Blueprint bp, @PathVariable String author, @PathVariable String bpname){
+        try {
+            blueprintsServices.updateBlueprint(bp,author,bpname);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (BlueprintsPersistenceException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }
 

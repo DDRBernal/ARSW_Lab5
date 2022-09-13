@@ -5,14 +5,14 @@
  */
 package edu.eci.arsw.services;
 
+import edu.eci.arsw.blueprints.controllers.BluePrintNotFoundException;
+import edu.eci.arsw.blueprints.controllers.BlueprintsPersistenceException;
 import edu.eci.arsw.model.Blueprint;
-import edu.eci.arsw.model.Point;
-import edu.eci.arsw.blueprints.controllers.ResourceNotFoundException;
 import edu.eci.arsw.blueprints.controllers.BlueprintsPersistence;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,10 +23,15 @@ import org.springframework.stereotype.Service;
 public class BlueprintsServices {
    
     @Autowired
+    @Qualifier("inMemory")
     BlueprintsPersistence bpp=null;
     
-    public void addNewBlueprint(Blueprint bp)  {
+    public void addNewBlueprint(Blueprint bp) throws BlueprintsPersistenceException {
         bpp.saveBlueprint(bp);
+    }
+
+    public void updateBlueprint(Blueprint bp, String newAuthor, String bprintname) throws BlueprintsPersistenceException{
+        bpp.updateBlueprint(bp,newAuthor,bprintname);
     }
     
     public Set<Blueprint> getAllBlueprints()  {
@@ -39,7 +44,7 @@ public class BlueprintsServices {
      * @param name blueprint's name
      * @return the blueprint of the given name created by the given author
      */
-    public Blueprint getBlueprint(String author,String name) {
+    public Blueprint getBlueprint(String author,String name) throws BluePrintNotFoundException {
         return bpp.getBlueprint(author,name);
     }
     
@@ -48,7 +53,7 @@ public class BlueprintsServices {
      * @param author blueprint's author
      * @return all the blueprints of the given author
      */
-    public Set<Blueprint> getBlueprintsByAuthor(String author){
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BluePrintNotFoundException {
         return bpp.getBlueprintsByAuthor(author);
     }
     

@@ -21,7 +21,7 @@ import java.util.Set;
  * @author hcadavid
  */
 @Component
-@Qualifier
+@Qualifier("inMemory")
 public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
 
     private final Map<Tuple<String,String>,Blueprint> blueprints=new HashMap<>();
@@ -32,8 +32,7 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         Point[] pts1=new Point[]{new Point(140, 140),new Point(115, 115)};
         Blueprint bp=new Blueprint("somebody", "firstBlueprint",pts1);
 
-        Point[] pts2=new Point[]{new Point(230, 150),new Point(90, 177)};
-        Blueprint bp2=new Blueprint("anybody", "secondBlueprint",pts2);
+        Blueprint bp2=new Blueprint("anybody", "secondBlueprint",pts1);
 
         Point[] pts3=new Point[]{new Point(30, 10),new Point(250, 55)};
         Blueprint bp3=new Blueprint("anybody", "thirdBlueprint",pts3);
@@ -41,13 +40,12 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         blueprints.put(new Tuple<>(bp.getAuthor(),bp.getName()), bp);
         blueprints.put(new Tuple<>(bp2.getAuthor(),bp2.getName()), bp2);
         blueprints.put(new Tuple<>(bp3.getAuthor(),bp3.getName()), bp3);
-        
     }    
     
     @Override
     public void saveBlueprint(Blueprint bp)  {
         if (blueprints.containsKey(new Tuple<>(bp.getAuthor(),bp.getName()))){
-
+            System.out.println("The given blueprint already exists: "+bp);
         }
         else{
             blueprints.put(new Tuple<>(bp.getAuthor(),bp.getName()), bp);
@@ -80,4 +78,11 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         }
         return set;
     }
+
+    @Override
+    public void updateBlueprint(Blueprint bp, String newAutor, String bprintname) {
+        bp.setAuthor(newAutor);
+        bp.setName(bprintname);
+    }
 }
+

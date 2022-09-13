@@ -28,7 +28,15 @@ public class Blueprint {
 
     public Blueprint() {
     }    
-    
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setAuthor(String author){
+        this.author = author;
+    }
+
     public String getName() {
         return name;
     }
