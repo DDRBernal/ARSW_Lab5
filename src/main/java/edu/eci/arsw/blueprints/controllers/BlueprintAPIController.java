@@ -69,22 +69,5 @@ public class BlueprintAPIController {
         }
     }
 
-
-
-    private String crearJsonString(Set<Blueprint> blueprints) {
-        List<Blueprint> blueprintList = new ArrayList<>(blueprints);
-        String blueprintsString = "{\"blueprints\" : ";
-
-        for (Blueprint blueprint:blueprintList) {
-            String author = blueprint.getAuthor();
-            String name = blueprint.getName();
-            String points = "blueprint.getPointsString()";
-            blueprintsString += "{\"Author\": \"" + author + "\", \"Name\": \"" + name + "\", \"Points\": \"" + points + "\"}";
-        }
-        blueprintsString += "}";
-
-        return blueprintsString;
-    }
-
 }
 
