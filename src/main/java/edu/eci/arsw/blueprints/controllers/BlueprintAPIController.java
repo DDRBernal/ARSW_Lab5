@@ -12,7 +12,6 @@ import java.util.Set;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.services.BlueprintsServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,16 +58,16 @@ public class BlueprintAPIController {
         }
     }
 
-//    @GetMapping("/blueprints/{author}/{bpname}")
-//    @RequestMapping(method = RequestMethod.POST)
-//    public ResponseEntity<?> updateNewBlueprint(@PathVariable Blueprint bp, @PathVariable String author, @PathVariable String bpname){
-//        try {
-//            blueprintsServices.updateBlueprint(bp,author,bpname);
-//            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-//        } catch (BlueprintsPersistenceException e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @GetMapping("/blueprints/{author}/{bpname}")
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> updateNewBlueprint(@PathVariable Blueprint bp, @PathVariable String author, @PathVariable String bpname){
+        try {
+            blueprintsServices.updateBlueprint(bp,author,bpname);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (BlueprintsPersistenceException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
 
